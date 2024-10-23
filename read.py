@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from pathlib import Path
 from icalendar import Calendar, Event
 from datetime import datetime, date
@@ -19,7 +20,7 @@ def read():
 
         while lines and not lines[0].endswith('plan'):
             lines.pop(0)
-        assert lines
+        assert lines, 'Expected plan in %s' % day
         lines.pop(0)
 
         plan_item = re.compile(r'^- \[(?:x|X| )\] (.*)')
@@ -35,7 +36,9 @@ def read():
             event.add('dtstart', daily_date)
             cal.add_component(event)
 
-        Path('~/obsidian/cal.ical').expanduser().write_bytes(cal.to_ical())
+    dest_path = Path('~/obsidian/cal.ical').expanduser()
+    dest_path.write_bytes(cal.to_ical())
+    print('File written to: %s' % dest_path)
 
 
 
